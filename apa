@@ -1,0 +1,86 @@
+#include <Adafruit_MotorShield.h>
+#include <lenlib.h>
+#include <Wire.h>
+#include <Servo.h>
+
+int R0Val = 0; //H 7
+int R1Val = 0; //M 6  
+int R2Val = 0; //V 5
+int R3Val = 0;
+int x = 75;
+int y = x+25;
+
+  myMotors Motors; // Create motors object
+  mySensors Sensors; // create sensors object
+  
+void setup()                        // put your setup code here, to run once:
+{
+  
+  Motors.beginMotors(); // Start up motors 
+  Sensors.beginSensors(); // start sensors
+
+  Serial.begin(9600); // set up Serial library at 9600 bps
+  Serial.println("Reflect sensor test.");
+}
+
+void loop()              // put your main code here, to run repeatedly:
+{
+  
+  R0Val  =Sensors.readReflect0();
+  R1Val = Sensors.readReflect1();
+  R2Val = Sensors.readReflect2();
+  R3Val = Sensors.readReflect3();
+
+  Serial.print("Reflect 0: ");Serial.print(R0Val);
+  Serial.print("\tReflect 1: ");Serial.print(R1Val);
+  Serial.print("\tReflect 2: ");Serial.print(R2Val);
+  Serial.print("\tReflect 3: ");Serial.print(R3Val);
+  Serial.print("\n");
+  
+  if (R0Val == 0 && R1Val == 1 && R2Val == 0) // Kör rakt fram
+  {  
+      
+    Motors.runMotor(1, FORWARD ,y);
+    Motors.runMotor(3, FORWARD ,x);  
+    
+       
+  }
+   else if (R0Val == 1 && R1Val == 1 && R2Val == 0) // Sväng vänster
+  {           
+    Motors.runMotor(1, FORWARD ,0); //y-25
+    Motors.runMotor(3, FORWARD ,75);  //x+50
+
+    
+  }
+     else if(R0Val == 0 && R1Val == 1 && R2Val == 1) // Sväng höger
+  {      
+    Motors.runMotor(1, FORWARD ,125);  //y +25
+    Motors.runMotor(3, FORWARD ,0);     //x
+
+ 
+  }
+  else if(R0Val == 1 && R1Val == 1 && R2Val == 1) // Stå still
+  {  
+    
+    Motors.runMotor(1, FORWARD ,0);
+    Motors.runMotor(3, FORWARD ,0);
+
+   
+  }
+  else if(R0Val == 1 && R1Val == 1 && R2Val == 0) //  Mer vänster 
+  {    
+    Motors.runMotor(1, FORWARD ,y);
+    Motors.runMotor(3, FORWARD ,x+75);
+
+   
+  }
+  else if(R0Val == 0  && R1Val == 1 && R2Val == 1) //  Mer höger
+  {     
+    Motors.runMotor(1, FORWARD ,y+75);
+    Motors.runMotor(3, FORWARD ,x);
+
+  }
+  
+  }
+ 
+
